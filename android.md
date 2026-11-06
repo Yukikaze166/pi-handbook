@@ -34,7 +34,7 @@ npm config set registry https://registry.npmmirror.com
 ## 三、拷配置
 
 ```bash
-git clone https://github.com/<你的用户名>/pi-handbook ~/pi-handbook
+git clone https://github.com/Yukikaze166/pi-handbook ~/pi-handbook
 
 mkdir -p ~/.pi/agent
 cp -r ~/pi-handbook/config/agent/. ~/.pi/agent/

@@ -1,0 +1,8 @@
+# 统一 LF：这些文件会被 Linux / Termux 直接拷走使用
+* text=auto eol=lf
+
+# 二进制
+*.exe binary
+*.png binary
+*.jpg binary
+*.wasm binary

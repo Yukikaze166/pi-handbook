@@ -88,7 +88,7 @@ pi --version
 ## 四、拷配置
 
 ```powershell
-git clone https://github.com/<你的用户名>/pi-handbook
+git clone https://github.com/Yukikaze166/pi-handbook
 cd pi-handbook
 
 New-Item -ItemType Directory -Force "$env:USERPROFILE\.pi\agent" | Out-Null
