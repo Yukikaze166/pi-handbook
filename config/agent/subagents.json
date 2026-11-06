@@ -1,0 +1,19 @@
+{
+  "maxConcurrent": 6,
+  "maxConcurrentForeground": 4,
+  "defaultMaxTurns": 60,
+  "defaultJoinMode": "smart",
+  "backgroundByDefault": true,
+  "maxSubagentDepth": 1,
+  "fallbackSubagent": "none",
+  "scopeModels": true,
+  "workflowsEnabled": true,
+  "schedulingEnabled": false,
+  "disableDefaultAgents": true,
+  "widgetMode": "background",
+  "toolDescriptionMode": "full",
+  "outputTranscript": true,
+  "reportUsage": true,
+  "showCost": true,
+  "showModel": true
+}

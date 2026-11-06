@@ -1,0 +1,16 @@
+# 本地临时产物
+.pi/tmp/
+
+# 依赖
+node_modules/
+
+# 密钥/运行时数据，永不入库
+auth.json
+sessions/
+models-store.json
+pi-web-session-*.json
+trust.json
+
+# 系统垃圾
+Thumbs.db
+.DS_Store

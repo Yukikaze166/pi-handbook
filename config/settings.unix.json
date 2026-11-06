@@ -1,0 +1,38 @@
+{
+  "lastChangelogVersion": "1.5.0",
+  "theme": "dark",
+  "defaultProvider": "deepseek",
+  "defaultModel": "deepseek-flash",
+  "defaultThinkingLevel": "high",
+  "defaultTools": [
+    "read",
+    "bash",
+    "edit",
+    "write"
+  ],
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 32768,
+    "keepRecentTokens": 32768
+  },
+  "packages": [
+    "npm:@tavily/pi-extension",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@narumitw/pi-usage",
+    "npm:pi-cc-extensions",
+    "npm:@tintinweb/pi-tasks",
+    "vendor/pi-subagents"
+  ],
+  "enabledModels": [
+    "deepseek/deepseek-flash",
+    "openai-codex/gpt-6-astra",
+    "openai-codex/gpt-6.1-sol"
+  ],
+  "hideThinkingBlock": true,
+  "tuiMode": "fullscreen",
+  "extensionChangelogVersions": {
+    "{\"source\":\"npm:@tintinweb/pi-tasks\",\"scope\":\"user\"}": "0.9.1",
+    "{\"source\":\"npm:@narumitw/pi-usage\",\"scope\":\"user\"}": "0.69.2",
+    "{\"source\":\"vendor/pi-subagents\",\"scope\":\"user\"}": "0.23.1"
+  }
+}
