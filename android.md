@@ -1,37 +1,42 @@
 # 安卓手机（Termux）
 
-目标：在手机上跑同一套 pi 配置。和 Linux 版的差别：`pkg` 代替 `apt`、Termux 的路径、`browser-use` 装不了（手机没有 Chrome 调试端口）。
+> 适用系统：Android 7.0+，Termux（F-Droid 发行版）
+> 前置条件：Termux 已安装、Node.js ≥ 22、Git
+> 预计耗时：约 20 分钟
+> 对应配置：`config/settings.unix.json` + `config/agent/`（不含 `browser-use`）
 
-## 一、装 Termux
+本页用于在安卓设备上运行同一套 pi 配置。与 Linux 版的差异为：以 `pkg` 代替 `apt`、Termux 专用路径、`browser-use` 无法部署（设备不具备 Chrome 调试端口）。
 
-从 **F-Droid** 装：<https://f-droid.org/packages/com.termux/>。别用 Play 商店版本，那个已经废弃，包管理会出问题。
+## 一、安装 Termux
 
-装完打开，先更新并装前置：
+从 **F-Droid** 安装：<https://f-droid.org/packages/com.termux/>。请勿使用 Play 商店版本，该版本已停止维护，包管理器可能出现异常。
+
+安装完成后打开终端，更新并安装前置组件：
 
 ```bash
 pkg update && pkg upgrade -y
 pkg install -y nodejs git ripgrep fd
-node -v    # 需要 v22 以上
+node -v    # 需为 v22 或更高
 ```
 
-`fd` 在 Termux 仓库里就叫 `fd`，装完直接是 `fd` 命令。
+`fd` 在 Termux 仓库中的包名即为 `fd`，安装后命令名同为 `fd`。
 
-## 二、装 pi
+## 二、安装 pi
 
 ```bash
 npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 pi --version
 ```
 
-Termux 的 npm 全局目录在用户空间内，**不需要 sudo**。国内慢就加镜像：
+Termux 的 npm 全局目录位于用户空间内，**无需 sudo**。国内网络建议设置镜像：
 
 ```bash
 npm config set registry https://registry.npmmirror.com
 ```
 
-**注意**：pi 在 Android 上**不会**自动下载 fd/rg（Bionic libc 不兼容官方 Linux 二进制），必须靠上面 `pkg install` 装好。如果启动时提示 `fd not found`，就是这一步漏了。
+**注意**：pi 在 Android 上**不会**自动下载 fd 与 rg（官方 Linux 二进制基于 glibc，与 Android 的 Bionic 不兼容），必须通过上述 `pkg install` 安装。若启动时提示 `fd not found`，即为该步骤遗漏。
 
-## 三、拷配置
+## 三、部署配置
 
 ```bash
 git clone https://github.com/Yukikaze166/pi-handbook ~/pi-handbook
@@ -41,22 +46,22 @@ cp -r ~/pi-handbook/config/agent/. ~/.pi/agent/
 cp ~/pi-handbook/config/settings.unix.json ~/.pi/agent/settings.json
 ```
 
-用 `settings.unix.json`，别用 Windows 那份（里面 `shellPath` 和 `powershell` 工具在 Termux 上都不存在）。
+必须使用 `settings.unix.json`。`settings.windows.json` 中的 `shellPath` 与 `powershell` 工具在 Termux 环境下均不存在。
 
-## 四、补依赖
+## 四、补齐依赖
 
 ```bash
 cd ~/.pi/agent/vendor/pi-subagents
 npm install --omit=dev --omit=peer
 ```
 
-**去掉装不了的 skill**：
+**移除无法使用的 skill：**
 
 ```bash
 rm -rf ~/.pi/agent/skills/browser-use
 ```
 
-`browser-use` 需要连本机 Chrome 的调试端口，手机上没法用，留着会让模型误判。`officecli` 保留（它只需要 Node）。
+`browser-use` 需要连接本机 Chrome 的调试端口，移动设备不具备该条件；保留会导致模型误判自身能力。`officecli` 保留（其仅依赖 Node.js）。
 
 ## 五、登录
 
@@ -64,9 +69,9 @@ rm -rf ~/.pi/agent/skills/browser-use
 pi
 ```
 
-输入 `/login`，选 `deepseek` 填 API Key，或者 `openai-codex` 走 OAuth（会跳浏览器，手机上直接就能授权）。
+执行 `/login`：选择 `deepseek` 并填写 API Key，或选择 `openai-codex` 完成 OAuth 授权（移动设备可直接在浏览器中确认）。
 
-## 六、验证
+## 六、验收
 
 ```bash
 pi --version
@@ -75,39 +80,39 @@ rg --version
 pi list
 ```
 
-在 pi 里确认：
+在 pi 交互界面中确认：
 
-- [ ] 启动没有 `fd not found` / `ripgrep not found` / `package failed to install` 警告
-- [ ] 默认模型 `deepseek-flash`、思考 `high`、dark + fullscreen
-- [ ] bash 工具能跑（`ls` / `pwd` 正常）
-- [ ] `/agents` 有 6 个角色，`/solo` `/team` `/flow` 能切
-- [ ] skill 只剩 `officecli`
-- [ ] 能正常出回复
+- [ ] 启动过程无 `fd not found`、`ripgrep not found`、`package failed to install` 类警告
+- [ ] 默认模型为 `deepseek-flash`，思考等级为 `high`，界面为 dark 主题与 fullscreen 模式
+- [ ] `bash` 工具可正常执行（如 `ls`、`pwd`）
+- [ ] `/agents` 可见 6 个角色，`/solo`、`/team`、`/flow` 均可切换
+- [ ] skill 列表仅含 `officecli`
+- [ ] 可正常发起对话并获得回复
 
 ## 常见问题
 
-**Node 版本不够**：`pkg install nodejs`（别装 `nodejs-lts`，老版本可能低于 22），装完 `node -v` 确认。
+**Node.js 版本过低。** 执行 `pkg install nodejs`（不建议使用 `nodejs-lts`，其版本可能低于 22），安装后通过 `node -v` 确认。
 
-**`fd: command not found`**：漏了 `pkg install fd`，或没有重开终端。
+**`fd: command not found`。** 遗漏 `pkg install fd`，或未重新打开终端。
 
-**输入 Ctrl / Esc 不方便**：Termux 的虚拟键盘 Ctrl 在左侧滑出栏里，`Ctrl+C` 中断、`Esc` 取消当前操作都靠它；也可以外接蓝牙键盘。
+**虚拟键盘操作不便。** Termux 虚拟键盘中，`Ctrl` 与 `Esc` 位于左侧滑出栏，`Ctrl+C` 用于中断、`Esc` 用于取消当前操作；亦可外接蓝牙键盘。
 
-**切后台就被杀**：跑长任务前先
+**后台进程被系统终止。** 运行长任务前执行：
 
 ```bash
 termux-wake-lock
 ```
 
-结束再 `termux-wake-unlock`。还要在系统设置里把 Termux 的电池优化关掉，否则锁屏后进程会被冻结。
+任务结束后执行 `termux-wake-unlock`。此外需在系统设置中关闭 Termux 的电池优化，否则锁屏后进程会被冻结。
 
-**想访问手机里的文件**：
+**需要访问设备存储。** 执行：
 
 ```bash
 termux-setup-storage
 ```
 
-之后 `~/storage/shared` 就是内部存储。只有需要让 pi 读写手机文件时才开。
+此后 `~/storage/shared` 指向内部存储。仅在需要让 pi 读写手机文件时启用。
 
-**`/team` 报 work-mode 错误**：`vendor/pi-subagents` 没拷全，或第四步 `npm install` 没做。
+**`/team` 报 work-mode 相关错误。** `vendor/pi-subagents` 未完整复制，或第四步的 `npm install` 未执行。
 
-**内存吃紧**：`settings.json` 里已经开了 compaction（`reserveTokens` / `keepRecentTokens` 各 32768），小内存机器可以再调低这两个值。
+**内存受限。** `settings.json` 已启用上下文压缩（`reserveTokens` 与 `keepRecentTokens` 各 32768）。内存较小的设备可适当调低这两个值。
