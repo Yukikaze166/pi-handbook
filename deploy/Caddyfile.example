@@ -1,0 +1,26 @@
+# Caddy v2 配置示例：docsify 站点
+# 用法：将本文件内容合并进 /etc/caddy/Caddyfile，把 wiki.example.com 与 root 改为实际值，
+#      然后执行 sudo systemctl reload caddy。
+# Caddy 会自动申请并续期 HTTPS 证书，无需 certbot。
+
+wiki.example.com {
+	root * /var/www/pi-handbook
+	encode gzip zstd
+	file_server
+
+	# 禁止访问仓库内部目录与临时目录
+	@hidden path /.git/* /.pi/* /.github/*
+	respond @hidden 404
+
+	# 配置文件目录按需隐藏（默认公开，内容与公开仓库一致）
+	# @config path /config/*
+	# respond @config 404
+
+	# 文档更新后立即生效，避免浏览器使用缓存
+	@docs path /*.md /index.html /_sidebar.md
+	header @docs Cache-Control "no-cache"
+
+	# 静态资源可长期缓存
+	@assets path /docsify/*
+	header @assets Cache-Control "public, max-age=604800"
+}
