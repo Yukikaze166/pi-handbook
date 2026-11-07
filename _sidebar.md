@@ -1,5 +1,7 @@
 - [首页](README.md)
 
+- [在线站点](https://pibook.akikaze.top/)
+
 - 目标设备
   - [Windows 10 / 11](windows.md)
   - [Linux 服务器](linux.md)

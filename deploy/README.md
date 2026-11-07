@@ -1,5 +1,7 @@
 # 站点部署说明
 
+线上地址：<https://pibook.akikaze.top/>（Cloudflare DNS，A 记录指向 `64.118.147.12`，灰云直连；证书由 Caddy 向 Let's Encrypt 自动签收并续期）
+
 本站点采用 docsify：不构建、不生成静态产物，直接把仓库根目录作为网站根目录即可。
 
 - `index.html`：站点入口与 docsify 配置
