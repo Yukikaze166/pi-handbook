@@ -3,9 +3,9 @@
 > 适用系统：Android 7.0+，Termux（F-Droid 发行版）
 > 前置条件：Termux 已安装、Node.js ≥ 22、Git
 > 预计耗时：约 20 分钟
-> 对应配置：`config/settings.unix.json` + `config/agent/`（不含 `browser-use`）
+> 对应配置：`config/settings.unix.json` + `config/agent/`（不含 `browser-use` 与 `officecli`）
 
-本页用于在安卓设备上运行同一套 pi 配置。与 Linux 版的差异为：以 `pkg` 代替 `apt`、Termux 专用路径、`browser-use` 无法部署（设备不具备 Chrome 调试端口）。
+本页用于在安卓设备上运行同一套 pi 配置。与 Linux 版的差异为：以 `pkg` 代替 `apt`、Termux 专用路径，以及两个 skill 无法部署（`browser-use` 依赖 Chrome 调试端口，`officecli` 无 Android 版本）。
 
 ## 一、安装 Termux
 
@@ -55,13 +55,18 @@ cd ~/.pi/agent/vendor/pi-subagents
 npm install --omit=dev --omit=peer
 ```
 
-**移除无法使用的 skill：**
+**移除本平台不可用的两个 skill：**
 
 ```bash
-rm -rf ~/.pi/agent/skills/browser-use
+rm -rf ~/.pi/agent/skills/browser-use ~/.pi/agent/skills/officecli
 ```
 
-`browser-use` 需要连接本机 Chrome 的调试端口，移动设备不具备该条件；保留会导致模型误判自身能力。`officecli` 保留（其仅依赖 Node.js）。
+两者在 Termux 下均无法工作，保留会导致模型误判自身能力：
+
+| Skill | 不可用原因 |
+|---|---|
+| `browser-use` | 依赖本机 Chrome 的调试端口，移动设备不具备 |
+| `officecli` | 需官方分发的单文件二进制，仅提供 macOS、Linux（glibc）与 Windows 版本，无 Android / Termux 构建 |
 
 ## 五、登录
 
@@ -86,7 +91,7 @@ pi list
 - [ ] 默认模型为 `deepseek-flash`，思考等级为 `high`，界面为 dark 主题与 fullscreen 模式
 - [ ] `bash` 工具可正常执行（如 `ls`、`pwd`）
 - [ ] `/agents` 可见 6 个角色，`/solo`、`/team`、`/flow` 均可切换
-- [ ] skill 列表仅含 `officecli`
+- [ ] skill 列表为空（`browser-use` 与 `officecli` 均已移除）
 - [ ] 可正常发起对话并获得回复
 
 ## 常见问题
@@ -114,5 +119,7 @@ termux-setup-storage
 此后 `~/storage/shared` 指向内部存储。仅在需要让 pi 读写手机文件时启用。
 
 **`/team` 报 work-mode 相关错误。** `vendor/pi-subagents` 未完整复制，或第四步的 `npm install` 未执行。
+
+**officecli skill 不可用。** Termux 不适用：officecli 为官方分发的单文件二进制，仅提供 macOS、Linux（glibc）与 Windows 版本，无法在 Android 的 Bionic 环境运行。该 skill 已在第四步移除；如需处理 Office 文档，请改用其他设备。
 
 **内存受限。** `settings.json` 已启用上下文压缩（`reserveTokens` 与 `keepRecentTokens` 各 32768）。内存较小的设备可适当调低这两个值。

@@ -11,7 +11,7 @@
 | 扩展 | 5 个 npm 扩展 + 本地补丁版 `pi-subagents` + `timestamp` / `work-mode` 两个自写扩展 |
 | 工作模式 | `/solo` `/team` `/flow` `/workmode`，新会话默认 SOLO |
 | 子代理 | 6 个角色：scout / researcher / browser-operator / office-operator / worker / reviewer |
-| Skills | `officecli`（全平台）、`browser-use`（仅 Windows） |
+| Skills | `officecli`（Windows / Linux）、`browser-use`（仅 Windows） |
 | 规范 | 全局 `AGENTS.md` 工作规范 |
 
 以下内容不参与迁移：会话记录（`sessions/`）、登录凭据（`auth.json`）、项目信任列表（`trust.json`）、`fd` 与 `rg` 可执行文件。
@@ -25,6 +25,8 @@
 | 安卓手机（Termux） | [android.md](android.md) | Termux（F-Droid 发行版） | 约 20 分钟 |
 
 三份文档采用统一结构：**前置准备 → 安装 fd 与 ripgrep → 安装 pi → 部署配置 → 补齐依赖 → 登录 → 验收**。出现异常时，参见各页「常见问题」章节。
+
+平台能力差异：安卓端不部署 `browser-use` 与 `officecli` 两个 skill（详见 [android.md](android.md)）；`powershell` 工具仅在 Windows 版 `settings.json` 中启用。
 
 ## 仓库结构
 
