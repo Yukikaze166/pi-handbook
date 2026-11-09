@@ -107,7 +107,7 @@ rm -rf ~/.pi/agent/skills/browser-use
 
 `browser-use` 依赖本机 Chrome 的调试端口，服务器环境不具备该条件。保留会导致模型误判自身能力，因此移除。`officecli` 保留。
 
-## 六、登录
+## 六、登录与环境变量
 
 ```bash
 pi
@@ -117,6 +117,20 @@ pi
 
 - `deepseek`：填写 API Key
 - `openai-codex`：采用 OAuth 授权。服务器无图形界面时，pi 会输出授权链接，需在本地浏览器打开并完成授权，再将回跳地址或授权码回填。
+
+**环境变量（两个 API Key）**
+
+```bash
+cat >> ~/.bashrc <<'EOF'
+export DASHSCOPE_API_KEY="sk-..."
+export TAVILY_API_KEY="tvly-..."
+EOF
+source ~/.bashrc
+```
+
+仅当前会话生效时直接 `export` 即可。这两个值不要写入仓库或任何脚本文件。
+
+用途：`DASHSCOPE_API_KEY` 供阿里云百炼两个模型使用，`TAVILY_API_KEY` 供 `web_search` / `web_fetch` 使用。设置后需重启 pi。
 
 ## 七、验收
 
@@ -134,6 +148,8 @@ pi list               # 应列出 6 个 npm 扩展与 vendor/pi-subagents
 - [ ] `bash` 工具可正常执行（如 `ls`、`git status`）
 - [ ] `/agents` 可见 6 个角色，`/solo`、`/team`、`/flow` 均可切换
 - [ ] `/plan` 可进入只读规划模式，且规划期间编辑工具被禁用
+- [ ] 已设 `DASHSCOPE_API_KEY` 时，`/model` 中可见两个阿里云百炼模型
+- [ ] `web_search` 可正常返回结果（需 `TAVILY_API_KEY`）
 - [ ] skill 列表仅含 `officecli`，不含 `browser-use`
 - [ ] 可正常发起对话并获得回复
 
@@ -152,3 +168,5 @@ pi list               # 应列出 6 个 npm 扩展与 vendor/pi-subagents
 **需要 pi 常驻运行。** 建议使用 `tmux new -s pi` 或 `screen` 启动，不宜直接使用 `nohup`，因 TUI 需要真实终端。
 
 **阿里云百炼的两个模型不显示或调用失败。** 先确认 `DASHSCOPE_API_KEY` 已设置（写入 `~/.bashrc` 后需重新登录或 `source`），再检查 `models.json` 是否完整复制。未设置该变量时只有这两个模型受影响。
+
+**`web_search` 报 `Missing TAVILY_API_KEY`。** 环境变量 `TAVILY_API_KEY` 未设置或未生效。按第六步写入 `~/.bashrc` 并 `source`，重启 pi 后用 `echo $TAVILY_API_KEY` 确认非空。

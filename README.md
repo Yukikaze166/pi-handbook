@@ -15,6 +15,7 @@
 | 工作模式 | `/solo` `/team` `/flow` `/workmode`，新会话默认 SOLO |
 | 子代理 | 6 个角色：scout / researcher / browser-operator / office-operator / worker / reviewer |
 | Skills | `officecli`（Windows / Linux）、`browser-use`（仅 Windows） |
+| 联网工具 | `web_search` / `web_fetch`（Tavily 扩展，需 `TAVILY_API_KEY`） |
 | 规范 | 全局 `AGENTS.md` 工作规范 |
 
 以下内容不参与迁移：会话记录（`sessions/`）、登录凭据（`auth.json`）、项目信任列表（`trust.json`）、`fd` 与 `rg` 可执行文件。
@@ -58,11 +59,20 @@ pi-handbook/
 
 ## 三项前提
 
-**一、凭据不入库。** `auth.json` 不包含在仓库内。每台设备安装完成后需自行登录一次：启动 `pi` 后执行 `/login`，选择 `deepseek` 并填写 API Key，或选择 `openai-codex` 完成 OAuth 授权。
+**一、凭据不入库。** 所有密钥都不在仓库里，需每台设备自行配置，共四项：
+
+| 凭据 | 形式 | 作用范围 | 配置方式 |
+|---|---|---|---|
+| DeepSeek API Key | 交互登录，存 `auth.json` | 默认模型 `deepseek-flash` | 启动 `pi` 后 `/login` |
+| OpenAI Codex | OAuth，存 `auth.json` | `gpt-6-astra`、`gpt-6.1-sol` | `/login` 走浏览器授权 |
+| `DASHSCOPE_API_KEY` | 环境变量 | 阿里云百炼两个模型 | 各平台文档「登录与环境变量」 |
+| `TAVILY_API_KEY` | 环境变量 | `web_search`、`web_fetch` 两个联网工具 | 同上 |
+
+未配置时仅对应能力不可用（模型列不出来、工具报错），不影响 pi 启动与其他功能。
 
 **二、`settings.json` 分为两份。** Windows 版本包含 `shellPath`（指向 Git Bash）与 `defaultTools` 中的 `powershell` 工具，Linux 与 Termux 环境不具备上述条件。各平台文档已指明对应文件，请勿混用。
 
-**三、`DASHSCOPE_API_KEY` 需在目标设备自行设置。** `models.json` 里阿里云百炼 provider 只引用环境变量名，不含具体值。未设置该变量时，`aliyun-maas-beijing` 下的两个模型不可用，其余模型不受影响。
+**三、两个环境变量需在目标设备自行设置。** `DASHSCOPE_API_KEY` 与 `TAVILY_API_KEY` 只以变量名形式出现在配置里（`models.json` 与 Tavily 扩展），具体值不入库。设置方法见各平台文档，切勿写进仓库或脚本。
 
 ## 配置变更后的同步流程
 

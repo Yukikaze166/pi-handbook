@@ -138,7 +138,7 @@ npm config set registry https://registry.npmmirror.com
 
 若获取失败，pi 仅输出警告、不中断启动，并在下次启动时重试。
 
-## 六、登录
+## 六、登录与环境变量
 
 ```powershell
 pi
@@ -150,6 +150,20 @@ pi
 - `openai-codex`：采用 OAuth 授权，在浏览器中完成确认
 
 `auth.json` 不包含在仓库内，因此每台设备均需登录一次。
+
+**环境变量（两个 API Key）**
+
+```powershell
+[Environment]::SetEnvironmentVariable("DASHSCOPE_API_KEY", "sk-...", "User")
+[Environment]::SetEnvironmentVariable("TAVILY_API_KEY", "tvly-...", "User")
+```
+
+也可用「系统属性 → 环境变量 → 用户变量」新建同名变量。两点注意：
+
+- 直接敲在命令行会进入 PowerShell 历史文件，在意的话改用图形界面
+- 设置后需重新打开终端并重启 pi 才生效
+
+用途：`DASHSCOPE_API_KEY` 供阿里云百炼两个模型使用，`TAVILY_API_KEY` 供 `web_search` / `web_fetch` 使用。
 
 ## 七、验收
 
@@ -170,6 +184,7 @@ pi list               # 应列出 6 个 npm 扩展与 vendor\pi-subagents
 - [ ] `/solo`、`/team`、`/flow` 均可正常切换，新会话默认为 SOLO
 - [ ] `/plan` 可进入只读规划模式，且规划期间编辑工具被禁用
 - [ ] 已设 `DASHSCOPE_API_KEY` 时，`/model` 中可见 `qwen3.8-flash` 与 `deepseek-v4.1-flash-1017`
+- [ ] `web_search` 可正常返回结果（需 `TAVILY_API_KEY`）
 - [ ] skill 列表包含 `officecli` 与 `browser-use`
 - [ ] 可正常发起对话并获得回复
 
@@ -188,3 +203,5 @@ pi list               # 应列出 6 个 npm 扩展与 vendor\pi-subagents
 **officecli skill 不可用。** 需单独安装 officecli CLI，安装方式见该 skill 文件。
 
 **阿里云百炼的两个模型不显示或调用失败。** 先确认环境变量 `DASHSCOPE_API_KEY` 已设置（新开终端后生效），再检查 `models.json` 是否完整复制。该变量未设置时只有这两个模型受影响，其余模型正常。
+
+**`web_search` 报 `Missing TAVILY_API_KEY`。** 环境变量 `TAVILY_API_KEY` 未设置或未生效。按第六步设置后需重新打开终端并重启 pi；可先 `echo $env:TAVILY_API_KEY` 确认能读到。

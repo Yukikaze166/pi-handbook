@@ -69,13 +69,25 @@ rm -rf ~/.pi/agent/skills/browser-use ~/.pi/agent/skills/officecli
 | `browser-use` | 依赖本机 Chrome 的调试端口，移动设备不具备 |
 | `officecli` | 需官方分发的单文件二进制，仅提供 macOS、Linux（glibc）与 Windows 版本，无 Android / Termux 构建 |
 
-## 五、登录
+## 五、登录与环境变量
 
 ```bash
 pi
 ```
 
 执行 `/login`：选择 `deepseek` 并填写 API Key，或选择 `openai-codex` 完成 OAuth 授权（移动设备可直接在浏览器中确认）。
+
+**环境变量（两个 API Key）**
+
+```bash
+cat >> ~/.bashrc <<'EOF'
+export DASHSCOPE_API_KEY="sk-..."
+export TAVILY_API_KEY="tvly-..."
+EOF
+source ~/.bashrc
+```
+
+用途：`DASHSCOPE_API_KEY` 供阿里云百炼两个模型使用，`TAVILY_API_KEY` 供 `web_search` / `web_fetch` 使用。设置后需重启 pi。
 
 ## 六、验收
 
@@ -93,6 +105,7 @@ pi list
 - [ ] `bash` 工具可正常执行（如 `ls`、`pwd`）
 - [ ] `/agents` 可见 6 个角色，`/solo`、`/team`、`/flow` 均可切换
 - [ ] `/plan` 可进入只读规划模式，且规划期间编辑工具被禁用
+- [ ] `web_search` 可正常返回结果（需 `TAVILY_API_KEY`）
 - [ ] skill 列表为空（`browser-use` 与 `officecli` 均已移除）
 - [ ] 可正常发起对话并获得回复
 
@@ -125,5 +138,7 @@ termux-setup-storage
 **officecli skill 不可用。** Termux 不适用：officecli 为官方分发的单文件二进制，仅提供 macOS、Linux（glibc）与 Windows 版本，无法在 Android 的 Bionic 环境运行。该 skill 已在第四步移除；如需处理 Office 文档，请改用其他设备。
 
 **阿里云百炼的两个模型不显示或调用失败。** 先确认 `DASHSCOPE_API_KEY` 已设置（`export` 后需重新启动 pi），再检查 `models.json` 是否完整复制。未设置该变量时只有这两个模型受影响。
+
+**`web_search` 报 `Missing TAVILY_API_KEY`。** 环境变量 `TAVILY_API_KEY` 未设置或未生效。按第五步写入 `~/.bashrc` 并 `source`，重启 pi 后用 `echo $TAVILY_API_KEY` 确认非空。
 
 **内存受限。** `settings.json` 已启用上下文压缩（`reserveTokens` 与 `keepRecentTokens` 各 32768）。内存较小的设备可适当调低这两个值。
