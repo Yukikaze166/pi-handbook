@@ -3,7 +3,7 @@
 > 适用系统：Ubuntu 20.04+ / Debian 11+（x64、arm64）
 > 前置条件：Node.js ≥ 22、sudo 权限、Git
 > 预计耗时：约 15 分钟
-> 对应配置：`config/settings.unix.json` + `config/agent/`
+> 对应配置：`config/settings.unix.json` + `config/pi-plan-mode.unix.json` + `config/agent/`
 
 本页用于在 Linux 服务器上安装 pi，并复刻秋风的模型、扩展、工作模式与子代理角色配置。与 Windows 版的差异有三处：包管理器不同、使用 unix 版 `settings.json`、不部署 `browser-use`。
 
@@ -79,6 +79,7 @@ git clone https://github.com/Yukikaze166/pi-handbook ~/pi-handbook
 mkdir -p ~/.pi/agent
 cp -r ~/pi-handbook/config/agent/. ~/.pi/agent/
 cp ~/pi-handbook/config/settings.unix.json ~/.pi/agent/settings.json
+cp ~/pi-handbook/config/pi-plan-mode.unix.json ~/.pi/agent/pi-plan-mode.json
 ```
 
 **必须使用 `settings.unix.json`。** `settings.windows.json` 包含 `shellPath`（指向 `C:\Program Files\Git\bin\bash.exe`）与 `defaultTools` 中的 `powershell` 工具，在 Linux 环境下会直接导致 `bash` 工具报错。
@@ -92,7 +93,7 @@ npm install --omit=dev --omit=peer
 
 跳过此步骤将导致 `/team`、`/flow` 报错。`vendor/pi-subagents` 为含本地补丁的版本，需连同其两个运行时依赖（`croner`、`nanoid`）一并安装。
 
-5 个 npm 扩展无需手动安装，`settings.json` 的 `packages` 字段已声明，pi 在启动时自动获取。国内网络可先设置镜像：
+6 个 npm 扩展无需手动安装，`settings.json` 的 `packages` 字段已声明，pi 在启动时自动获取。国内网络可先设置镜像：
 
 ```bash
 npm config set registry https://registry.npmmirror.com
@@ -123,7 +124,7 @@ pi
 pi --version          # 1.5.x
 fdfind --version
 rg --version
-pi list               # 应列出 5 个 npm 扩展与 vendor/pi-subagents
+pi list               # 应列出 6 个 npm 扩展与 vendor/pi-subagents
 ```
 
 在 pi 交互界面中确认：
@@ -132,6 +133,7 @@ pi list               # 应列出 5 个 npm 扩展与 vendor/pi-subagents
 - [ ] 默认模型为 `deepseek-flash`，思考等级为 `high`，界面为 dark 主题与 fullscreen 模式
 - [ ] `bash` 工具可正常执行（如 `ls`、`git status`）
 - [ ] `/agents` 可见 6 个角色，`/solo`、`/team`、`/flow` 均可切换
+- [ ] `/plan` 可进入只读规划模式，且规划期间编辑工具被禁用
 - [ ] skill 列表仅含 `officecli`，不含 `browser-use`
 - [ ] 可正常发起对话并获得回复
 
@@ -148,3 +150,5 @@ pi list               # 应列出 5 个 npm 扩展与 vendor/pi-subagents
 **`/team` 报 work-mode 相关错误。** `vendor/pi-subagents` 未完整复制，或第五步未执行。该目录需整份迁移，其中包含 4 处本地补丁，从 npm 重新安装上游包将导致补丁全部丢失（详见 `config/agent/vendor/pi-subagents-LOCAL-PATCH.md`）。
 
 **需要 pi 常驻运行。** 建议使用 `tmux new -s pi` 或 `screen` 启动，不宜直接使用 `nohup`，因 TUI 需要真实终端。
+
+**阿里云百炼的两个模型不显示或调用失败。** 先确认 `DASHSCOPE_API_KEY` 已设置（写入 `~/.bashrc` 后需重新登录或 `source`），再检查 `models.json` 是否完整复制。未设置该变量时只有这两个模型受影响。

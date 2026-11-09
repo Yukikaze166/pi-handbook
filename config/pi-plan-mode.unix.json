@@ -1,0 +1,9 @@
+{
+  "thinkingLevel": "inherit",
+  "defaultPlanTools": [
+    "read",
+    "bash",
+    "web_search",
+    "web_fetch"
+  ]
+}

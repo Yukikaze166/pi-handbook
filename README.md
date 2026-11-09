@@ -8,9 +8,10 @@
 
 | 项目 | 内容 |
 |---|---|
-| 模型 | 默认 `deepseek-flash`，思考等级 `high`，含自定义 `models.json` |
+| 模型 | 默认 `deepseek-flash`，思考等级 `high`，含自定义 `models.json`（deepseek 自定义模型 + 阿里云百炼 MaaS） |
 | 界面 | dark 主题、fullscreen TUI、隐藏思考块 |
-| 扩展 | 5 个 npm 扩展 + 本地补丁版 `pi-subagents` + `timestamp` / `work-mode` 两个自写扩展 |
+| 扩展 | 6 个 npm 扩展（含 `pi-plan-mode`）+ 本地补丁版 `pi-subagents` + `timestamp` / `work-mode` 两个自写扩展 |
+| 规划模式 | `/plan` 只读规划：禁编辑、可提问、计划审阅后才进入实现 |
 | 工作模式 | `/solo` `/team` `/flow` `/workmode`，新会话默认 SOLO |
 | 子代理 | 6 个角色：scout / researcher / browser-operator / office-operator / worker / reviewer |
 | Skills | `officecli`（Windows / Linux）、`browser-use`（仅 Windows） |
@@ -39,6 +40,8 @@ pi-handbook/
 └─ config/
    ├─ settings.windows.json  # Windows 使用，含 shellPath 与 powershell 工具
    ├─ settings.unix.json     # Linux / Termux 使用，已移除上述两项并将路径改为正斜杠
+   ├─ pi-plan-mode.windows.json   # Windows 的 /plan 配置，含 powershell
+   ├─ pi-plan-mode.unix.json      # Linux / Termux 的 /plan 配置，已去掉 powershell
    └─ agent/                 # 目录结构对应 ~/.pi/agent/
       ├─ models.json
       ├─ subagents.json
@@ -53,11 +56,13 @@ pi-handbook/
 
 `config/agent/` 与 `~/.pi/agent/` 的目录结构一一对应，因此部署配置等同于一次目录复制。
 
-## 两项前提
+## 三项前提
 
 **一、凭据不入库。** `auth.json` 不包含在仓库内。每台设备安装完成后需自行登录一次：启动 `pi` 后执行 `/login`，选择 `deepseek` 并填写 API Key，或选择 `openai-codex` 完成 OAuth 授权。
 
 **二、`settings.json` 分为两份。** Windows 版本包含 `shellPath`（指向 Git Bash）与 `defaultTools` 中的 `powershell` 工具，Linux 与 Termux 环境不具备上述条件。各平台文档已指明对应文件，请勿混用。
+
+**三、`DASHSCOPE_API_KEY` 需在目标设备自行设置。** `models.json` 里阿里云百炼 provider 只引用环境变量名，不含具体值。未设置该变量时，`aliyun-maas-beijing` 下的两个模型不可用，其余模型不受影响。
 
 ## 配置变更后的同步流程
 
@@ -68,6 +73,7 @@ cd D:\aCode\pi-handbook
 Copy-Item -Recurse -Force "$env:USERPROFILE\.pi\agent\agents","$env:USERPROFILE\.pi\agent\extensions","$env:USERPROFILE\.pi\agent\skills" .\config\agent\ -Force
 Copy-Item -Force "$env:USERPROFILE\.pi\agent\models.json","$env:USERPROFILE\.pi\agent\subagents.json","$env:USERPROFILE\.pi\agent\tasks-config.json","$env:USERPROFILE\.pi\agent\pi-cc-extensions.json","$env:USERPROFILE\.pi\agent\AGENTS.md" .\config\agent\
 Copy-Item -Force "$env:USERPROFILE\.pi\agent\settings.json" .\config\settings.windows.json
+Copy-Item -Force "$env:USERPROFILE\.pi\agent\pi-plan-mode.json" .\config\pi-plan-mode.windows.json
 ```
 
-若变更涉及 `vendor/pi-subagents`，需一并同步，并将差异补充至 `config/agent/vendor/pi-subagents-LOCAL-PATCH.md`；`settings.unix.json` 需人工同步修改。
+若变更涉及 `vendor/pi-subagents`，需一并同步，并将差异补充至 `config/agent/vendor/pi-subagents-LOCAL-PATCH.md`；`settings.unix.json` 与 `pi-plan-mode.unix.json` 需人工同步修改。

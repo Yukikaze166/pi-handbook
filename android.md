@@ -3,7 +3,7 @@
 > 适用系统：Android 7.0+，Termux（F-Droid 发行版）
 > 前置条件：Termux 已安装、Node.js ≥ 22、Git
 > 预计耗时：约 20 分钟
-> 对应配置：`config/settings.unix.json` + `config/agent/`（不含 `browser-use` 与 `officecli`）
+> 对应配置：`config/settings.unix.json` + `config/pi-plan-mode.unix.json` + `config/agent/`（不含 `browser-use` 与 `officecli`）
 
 本页用于在安卓设备上运行同一套 pi 配置。与 Linux 版的差异为：以 `pkg` 代替 `apt`、Termux 专用路径，以及两个 skill 无法部署（`browser-use` 依赖 Chrome 调试端口，`officecli` 无 Android 版本）。
 
@@ -44,6 +44,7 @@ git clone https://github.com/Yukikaze166/pi-handbook ~/pi-handbook
 mkdir -p ~/.pi/agent
 cp -r ~/pi-handbook/config/agent/. ~/.pi/agent/
 cp ~/pi-handbook/config/settings.unix.json ~/.pi/agent/settings.json
+cp ~/pi-handbook/config/pi-plan-mode.unix.json ~/.pi/agent/pi-plan-mode.json
 ```
 
 必须使用 `settings.unix.json`。`settings.windows.json` 中的 `shellPath` 与 `powershell` 工具在 Termux 环境下均不存在。
@@ -91,6 +92,7 @@ pi list
 - [ ] 默认模型为 `deepseek-flash`，思考等级为 `high`，界面为 dark 主题与 fullscreen 模式
 - [ ] `bash` 工具可正常执行（如 `ls`、`pwd`）
 - [ ] `/agents` 可见 6 个角色，`/solo`、`/team`、`/flow` 均可切换
+- [ ] `/plan` 可进入只读规划模式，且规划期间编辑工具被禁用
 - [ ] skill 列表为空（`browser-use` 与 `officecli` 均已移除）
 - [ ] 可正常发起对话并获得回复
 
@@ -121,5 +123,7 @@ termux-setup-storage
 **`/team` 报 work-mode 相关错误。** `vendor/pi-subagents` 未完整复制，或第四步的 `npm install` 未执行。
 
 **officecli skill 不可用。** Termux 不适用：officecli 为官方分发的单文件二进制，仅提供 macOS、Linux（glibc）与 Windows 版本，无法在 Android 的 Bionic 环境运行。该 skill 已在第四步移除；如需处理 Office 文档，请改用其他设备。
+
+**阿里云百炼的两个模型不显示或调用失败。** 先确认 `DASHSCOPE_API_KEY` 已设置（`export` 后需重新启动 pi），再检查 `models.json` 是否完整复制。未设置该变量时只有这两个模型受影响。
 
 **内存受限。** `settings.json` 已启用上下文压缩（`reserveTokens` 与 `keepRecentTokens` 各 32768）。内存较小的设备可适当调低这两个值。

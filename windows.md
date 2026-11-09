@@ -3,7 +3,7 @@
 > 适用系统：Windows 10 / 11（x64、arm64）
 > 前置条件：Node.js ≥ 22、Git
 > 预计耗时：约 20 分钟
-> 对应配置：`config/settings.windows.json` + `config/agent/`
+> 对应配置：`config/settings.windows.json` + `config/pi-plan-mode.windows.json` + `config/agent/`
 
 本页用于在 Windows 设备上安装 pi，并复刻秋风的模型、扩展、工作模式与子代理角色配置。
 
@@ -101,6 +101,7 @@ cd pi-handbook
 New-Item -ItemType Directory -Force "$env:USERPROFILE\.pi\agent" | Out-Null
 Copy-Item -Recurse -Force .\config\agent\* "$env:USERPROFILE\.pi\agent\"
 Copy-Item -Force .\config\settings.windows.json "$env:USERPROFILE\.pi\agent\settings.json"
+Copy-Item -Force .\config\pi-plan-mode.windows.json "$env:USERPROFILE\.pi\agent\pi-plan-mode.json"
 ```
 
 部署完成后，目录结构应如下：
@@ -112,6 +113,7 @@ Copy-Item -Force .\config\settings.windows.json "$env:USERPROFILE\.pi\agent\sett
 ├─ subagents.json
 ├─ tasks-config.json
 ├─ pi-cc-extensions.json
+├─ pi-plan-mode.json      # 来源：pi-plan-mode.windows.json
 ├─ AGENTS.md
 ├─ agents\                # 6 个角色定义
 ├─ extensions\            # timestamp.ts、work-mode.ts
@@ -128,7 +130,7 @@ cd "$env:USERPROFILE\.pi\agent\vendor\pi-subagents"
 npm install --omit=dev --omit=peer
 ```
 
-**5 个 npm 扩展无需手动安装。** `settings.json` 的 `packages` 字段已声明这些扩展，pi 在启动时自动获取。国内网络可先设置镜像：
+**6 个 npm 扩展无需手动安装。** `settings.json` 的 `packages` 字段已声明这些扩展，pi 在启动时自动获取。国内网络可先设置镜像：
 
 ```powershell
 npm config set registry https://registry.npmmirror.com
@@ -157,7 +159,7 @@ pi
 pi --version          # 1.5.x
 fd --version
 rg --version
-pi list               # 应列出 5 个 npm 扩展与 vendor\pi-subagents
+pi list               # 应列出 6 个 npm 扩展与 vendor\pi-subagents
 ```
 
 在 pi 交互界面中确认：
@@ -166,6 +168,8 @@ pi list               # 应列出 5 个 npm 扩展与 vendor\pi-subagents
 - [ ] 界面为 dark 主题与 fullscreen 模式，默认模型为 `deepseek-flash`，思考等级为 `high`
 - [ ] `/agents` 可见 6 个角色：scout、researcher、browser-operator、office-operator、worker、reviewer
 - [ ] `/solo`、`/team`、`/flow` 均可正常切换，新会话默认为 SOLO
+- [ ] `/plan` 可进入只读规划模式，且规划期间编辑工具被禁用
+- [ ] 已设 `DASHSCOPE_API_KEY` 时，`/model` 中可见 `qwen3.8-flash` 与 `deepseek-v4.1-flash-1017`
 - [ ] skill 列表包含 `officecli` 与 `browser-use`
 - [ ] 可正常发起对话并获得回复
 
@@ -182,3 +186,5 @@ pi list               # 应列出 5 个 npm 扩展与 vendor\pi-subagents
 **browser-use skill 无法连接。** 该 skill 依赖本机 Chrome 的调试端口，需以 `--remote-debugging-port` 启动 Chrome，或使用 skill 中提供的连接脚本。
 
 **officecli skill 不可用。** 需单独安装 officecli CLI，安装方式见该 skill 文件。
+
+**阿里云百炼的两个模型不显示或调用失败。** 先确认环境变量 `DASHSCOPE_API_KEY` 已设置（新开终端后生效），再检查 `models.json` 是否完整复制。该变量未设置时只有这两个模型受影响，其余模型正常。
