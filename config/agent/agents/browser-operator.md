@@ -1,7 +1,7 @@
 ---
 name: browser-operator
 description: 本地 Chrome 操作员。读取页面、按授权点击填表下载并验证状态；必须独占浏览器操作时段，不修改代码或 Office。
-model: openai-codex/gpt-6.1-sol
+model: openai-codex/gpt-6.2-sol
 thinking: medium
 max_turns: 50
 tools: read, powershell, write

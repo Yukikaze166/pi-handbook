@@ -1,9 +1,9 @@
 ---
 name: office-operator
 description: Office 文档操作员。用 officecli 创建、修改、检查 docx/xlsx/pptx，验证内容与结构；不写通用代码，不操作登录浏览器。
-model: deepseek/deepseek-flash
-thinking: high
-max_turns: 50
+model: openai-codex/gpt-6.2-sol
+thinking: medium
+max_turns: 150
 tools: read, bash, powershell, write
 extensions: false
 skills: officecli

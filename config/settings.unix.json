@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "1.5.0",
+  "lastChangelogVersion": "1.6.0",
   "theme": "dark",
   "defaultProvider": "deepseek",
   "defaultModel": "deepseek-flash",
@@ -26,17 +26,19 @@
   ],
   "enabledModels": [
     "deepseek/deepseek-flash",
-    "openai-codex/gpt-6-astra",
+    "openai-codex/gpt-6.2-sol",
     "openai-codex/gpt-6.1-sol",
-    "aliyun-maas-beijing/qwen3.8-flash",
-    "aliyun-maas-beijing/deepseek-v4.1-flash-1017"
+    "openai-codex/gpt-6.1-terra",
+    "aliyun-maas-beijing/deepseek-v4.1-flash-1017",
+    "aliyun-maas-beijing/qwen3.8-flash"
   ],
   "hideThinkingBlock": true,
   "tuiMode": "fullscreen",
   "extensionChangelogVersions": {
     "{\"source\":\"npm:@tintinweb/pi-tasks\",\"scope\":\"user\"}": "0.9.1",
-    "{\"source\":\"npm:@narumitw/pi-usage\",\"scope\":\"user\"}": "0.69.2",
+    "{\"source\":\"npm:@narumitw/pi-usage\",\"scope\":\"user\"}": "0.69.3",
     "{\"source\":\"vendor/pi-subagents\",\"scope\":\"user\"}": "0.23.1",
-    "{\"source\":\"npm:@narumitw/pi-plan-mode@0.60.0\",\"scope\":\"user\"}": "0.60.0"
+    "{\"source\":\"npm:@narumitw/pi-plan-mode@0.60.0\",\"scope\":\"user\"}": "0.60.0",
+    "{\"source\":\"npm:pi-cc-extensions\",\"scope\":\"user\"}": "1.0.21"
   }
 }
