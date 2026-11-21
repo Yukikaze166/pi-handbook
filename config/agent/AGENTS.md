@@ -33,11 +33,12 @@
 ## 开发工具安装
 
 - Windows 上需要安装开发工具、CLI、运行时、SDK 时，统一装到 `D:\Dev\<工具名>\`，不要使用 `C:\Program Files`、`%LOCALAPPDATA%` 等默认位置。
-- 现有布局：`D:\Dev\nodejs`（Node.js）、`D:\Dev\uv`（uv 与受管 Python）、`D:\Dev\Git`、`D:\Dev\Microsoft VS Code`、`D:\Dev\gh`（GitHub CLI）。新增工具沿用同一命名方式。
 - 优先选便携版（zip / 免安装包）：解压到 `D:\Dev\<工具名>\`，把可执行文件所在目录加入**用户级** PATH，不要改系统级 PATH。
 - 只有安装包、没有便携版时，用支持自定义目录的安装器并显式指定 `D:\Dev\<工具名>\`；MSI 默认装到 Program Files 的方案不采用，改用 zip 版或直接解压安装包内容。
 - 程序本体进 `D:\Dev`，CLI 的配置与凭据仍留在用户目录（如 `~/.pi`、`~/.ssh`、`~/.config`）。
 - 安装后验证：新开终端能直接调用命令，`where <命令>` 只指向 `D:\Dev` 下的路径。
+
+## 工作模式与角色
 
 - 主会话以 work-mode 扩展报告的 SOLO / TEAM / FLOW 为准；只有用户通过 `/solo`、`/team`、`/flow`、`/workmode` 切换。新会话默认 SOLO，不能自行执行命令、调用 SDK 或启动另一个 pi 进程绕过模式。
 - SOLO：主会话直接处理任务，不使用子代理、结构化任务列表或工作流。允许文字计划，不影响浏览器、Office、代码能力。既有任务的取结果和停止入口保留。
