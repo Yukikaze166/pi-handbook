@@ -41,7 +41,16 @@ print(json.dumps(list_tabs(), ensure_ascii=False, indent=2))
 '@ | browser-use
 ```
 
-- CLI executable: `C:\Users\Sky_Qi_B\.local\bin\browser-use.exe`. If PATH lookup fails, pipe to `& 'C:\Users\Sky_Qi_B\.local\bin\browser-use.exe'`.
+- CLI: call `browser-use` directly. It is installed as a uv tool (`uv tool install browser-use`), so the shim is already on PATH — never hardcode a per-user absolute path. If PATH lookup fails, resolve it once and use that path with the call operator:
+
+```powershell
+$exe = (Get-Command browser-use -ErrorAction SilentlyContinue).Source
+# fallback: uv tool dir --bin  ->  join with browser-use.exe
+if (-not $exe) { $exe = Join-Path (uv tool dir --bin) 'browser-use.exe' }
+& $exe --version
+```
+
+  If neither resolves, reinstall with `uv tool install browser-use` (upgrade with `uv tool upgrade browser-use`).
 - For read-only checks use `list_tabs()` / `page_info()` only. Do not navigate, create/close tabs, call `ensure_real_tab()`, inject markers, or write page content unless the requested task needs it.
 - `browser-use --version` reports the bundled Browser Harness version. Inspect the `browser-use` package version with `uv tool list`.
 - After installing or editing this skill, use `/reload` in an existing pi session; invoke explicitly with `/skill:browser-use`.
