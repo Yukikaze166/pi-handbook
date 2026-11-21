@@ -82,7 +82,7 @@ cp ~/pi-handbook/config/settings.unix.json ~/.pi/agent/settings.json
 cp ~/pi-handbook/config/pi-plan-mode.unix.json ~/.pi/agent/pi-plan-mode.json
 ```
 
-**必须使用 `settings.unix.json`。** `settings.windows.json` 包含 `shellPath`（指向 `C:\Program Files\Git\bin\bash.exe`）与 `defaultTools` 中的 `powershell` 工具，在 Linux 环境下会直接导致 `bash` 工具报错。
+**必须使用 `settings.unix.json`。** `settings.windows.json` 的 `defaultTools` 包含 `powershell` 工具，Linux 环境下不存在该工具，会导致工具列表与实际能力不一致。
 
 ## 五、补齐依赖
 
@@ -135,7 +135,7 @@ source ~/.bashrc
 ## 七、验收
 
 ```bash
-pi --version          # 1.5.x
+pi --version          # 1.6.x
 fdfind --version
 rg --version
 pi list               # 应列出 6 个 npm 扩展与 vendor/pi-subagents
@@ -161,7 +161,7 @@ pi list               # 应列出 6 个 npm 扩展与 vendor/pi-subagents
 
 **npm 报 EACCES 权限错误。** 不建议强行使用 `sudo npm`，改用 nvm 安装用户级 Node.js 更为稳妥。
 
-**启动报 `shellPath` 或 bash 路径不存在。** 误用了 `settings.windows.json`，替换为 `settings.unix.json`。
+**工具列表里出现 `powershell` 或 `/plan` 工具报错。** 误用了 `settings.windows.json`，替换为 `settings.unix.json`。
 
 **`/team` 报 work-mode 相关错误。** `vendor/pi-subagents` 未完整复制，或第五步未执行。该目录需整份迁移，其中包含 4 处本地补丁，从 npm 重新安装上游包将导致补丁全部丢失（详见 `config/agent/vendor/pi-subagents-LOCAL-PATCH.md`）。
 

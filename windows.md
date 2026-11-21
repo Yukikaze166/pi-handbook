@@ -170,7 +170,7 @@ pi
 逐项确认，全部通过即视为复刻完成：
 
 ```powershell
-pi --version          # 1.5.x
+pi --version          # 1.6.x
 fd --version
 rg --version
 pi list               # 应列出 6 个 npm 扩展与 vendor\pi-subagents

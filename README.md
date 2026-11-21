@@ -38,9 +38,13 @@
 pi-handbook/
 ├─ README.md                 # 本页
 ├─ windows.md / linux.md / android.md
+├─ index.html                # docsify 站点入口
+├─ _sidebar.md               # 站点左侧导航
+├─ docsify/                  # 本地化的 docsify 运行时与主题，不依赖外部 CDN
+├─ deploy/                   # 站点部署说明（Cloudflare Pages）
 └─ config/
-   ├─ settings.windows.json  # Windows 使用，含 shellPath 与 powershell 工具
-   ├─ settings.unix.json     # Linux / Termux 使用，已移除上述两项并将路径改为正斜杠
+   ├─ settings.windows.json  # Windows 使用，defaultTools 含 powershell
+   ├─ settings.unix.json     # Linux / Termux 使用，已移除 powershell 并将路径改为正斜杠
    ├─ pi-plan-mode.windows.json   # Windows 的 /plan 配置，含 powershell
    ├─ pi-plan-mode.unix.json      # Linux / Termux 的 /plan 配置，已去掉 powershell
    └─ agent/                 # 目录结构对应 ~/.pi/agent/
@@ -52,7 +56,9 @@ pi-handbook/
       ├─ agents/             # 6 个角色定义
       ├─ extensions/         # timestamp.ts、work-mode.ts
       ├─ skills/             # officecli、browser-use
-      └─ vendor/pi-subagents # 含本地补丁的发行副本，不含 node_modules
+      └─ vendor/
+         ├─ pi-subagents/    # 含本地补丁的发行副本，不含 node_modules
+         └─ pi-subagents-LOCAL-PATCH.md   # 补丁清单与升级步骤
 ```
 
 `config/agent/` 与 `~/.pi/agent/` 的目录结构一一对应，因此部署配置等同于一次目录复制。
@@ -64,13 +70,13 @@ pi-handbook/
 | 凭据 | 形式 | 作用范围 | 配置方式 |
 |---|---|---|---|
 | DeepSeek API Key | 交互登录，存 `auth.json` | 默认模型 `deepseek-flash` | 启动 `pi` 后 `/login` |
-| OpenAI Codex | OAuth，存 `auth.json` | `gpt-6-astra`、`gpt-6.1-sol` | `/login` 走浏览器授权 |
+| OpenAI Codex | OAuth，存 `auth.json` | `gpt-6.2-sol`、`gpt-6.1-sol`、`gpt-6.1-terra` | `/login` 走浏览器授权 |
 | `DASHSCOPE_API_KEY` | 环境变量 | 阿里云百炼两个模型 | 各平台文档「登录与环境变量」 |
 | `TAVILY_API_KEY` | 环境变量 | `web_search`、`web_fetch` 两个联网工具 | 同上 |
 
 未配置时仅对应能力不可用（模型列不出来、工具报错），不影响 pi 启动与其他功能。
 
-**二、`settings.json` 分为两份。** Windows 版本包含 `shellPath`（指向 Git Bash）与 `defaultTools` 中的 `powershell` 工具，Linux 与 Termux 环境不具备上述条件。各平台文档已指明对应文件，请勿混用。
+**二、`settings.json` 分为两份。** Windows 版本的 `defaultTools` 多出 `powershell` 工具，Linux 与 Termux 环境不具备该工具。各平台文档已指明对应文件，请勿混用。
 
 **三、两个环境变量需在目标设备自行设置。** `DASHSCOPE_API_KEY` 与 `TAVILY_API_KEY` 只以变量名形式出现在配置里（`models.json` 与 Tavily 扩展），具体值不入库。设置方法见各平台文档，切勿写进仓库或脚本。
 

@@ -1,3 +1,0 @@
-# 仅供个人使用，不参与搜索引擎收录
-User-agent: *
-Disallow: /

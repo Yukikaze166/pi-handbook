@@ -47,7 +47,7 @@ cp ~/pi-handbook/config/settings.unix.json ~/.pi/agent/settings.json
 cp ~/pi-handbook/config/pi-plan-mode.unix.json ~/.pi/agent/pi-plan-mode.json
 ```
 
-必须使用 `settings.unix.json`。`settings.windows.json` 中的 `shellPath` 与 `powershell` 工具在 Termux 环境下均不存在。
+必须使用 `settings.unix.json`。`settings.windows.json` 的 `defaultTools` 包含 `powershell` 工具，Termux 环境下不存在该工具。
 
 ## 四、补齐依赖
 
